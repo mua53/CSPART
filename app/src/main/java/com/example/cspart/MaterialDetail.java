@@ -209,11 +209,11 @@ public class MaterialDetail extends AppCompatActivity {
         public void onClick(View v) {
             try {
                 List<String> lstSerialCode = material.getSerialCode();
-                connection = getZebraPrinterConn();
-                connection.open();
-                ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
-                getPrinterStatus();
-                PrinterStatus printerStatus = printer.getCurrentStatus();
+//                connection = getZebraPrinterConn();
+//                connection.open();
+//                ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+//                getPrinterStatus();
+//                PrinterStatus printerStatus = printer.getCurrentStatus();
                 EditText edtPrint = (EditText) findViewById(R.id.edtPrint);
                 int numberPrint = Integer.parseInt(edtPrint.getText().toString());
                 for (int i =0; i < numberPrint; i++) {
@@ -233,9 +233,9 @@ public class MaterialDetail extends AppCompatActivity {
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                         Date date = new Date();
                         String dateString = formatter.format(date);
-                        zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^" + serialCode + "^FS" + "^FO120,80^" + dateString +"^FS ^XZ";
-//                        Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + zplBitmap, Toast.LENGTH_LONG).show();
-                        printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
+                        zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCode + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
+                        Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + zplBitmap, Toast.LENGTH_LONG).show();
+//                        printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
                     } catch (WriterException e) {
                         e.printStackTrace();
                     }
@@ -243,8 +243,8 @@ public class MaterialDetail extends AppCompatActivity {
                 connection.close();
             } catch (ConnectionException e) {
                 Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_LONG).show();
-            } catch (ZebraPrinterLanguageUnknownException e) {
-                Toast.makeText(MaterialDetail.this, "Lỗi ngôn ngữ:" + e.getMessage(), Toast.LENGTH_LONG).show();
+//            } catch (ZebraPrinterLanguageUnknownException e) {
+//                Toast.makeText(MaterialDetail.this, "Lỗi ngôn ngữ:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
