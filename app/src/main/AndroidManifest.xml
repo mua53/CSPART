@@ -8,7 +8,6 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -20,6 +19,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CSPART"
         tools:targetApi="31">
+        <activity
+            android:name=".ScreenReportByArea"
+            android:exported="false" />
         <activity
             android:name=".ScreenStatusDelivery"
             android:exported="false">

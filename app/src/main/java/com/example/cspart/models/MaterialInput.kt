@@ -14,6 +14,7 @@ data class MaterialInput(
     var serialNumber: List<String>,
     var inputCode:String?,
     var areaCode:String?,
+    var areaName:String?,
     var lstArea: List<Area>?,
     var detail: List<Area>?,
     var lstSerialDetail: List<SerialDetail>?

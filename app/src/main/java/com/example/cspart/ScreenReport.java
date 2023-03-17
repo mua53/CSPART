@@ -97,7 +97,7 @@ public class ScreenReport extends AppCompatActivity {
                 //response
                 int statusCode = response.body().getStatus();
                 if (statusCode == 1){
-                    Intent intent = new Intent(getApplicationContext(),ScreenListReport.class);
+                    Intent intent = new Intent(getApplicationContext(),ScreenReportByArea.class);
                     Bundle bundle = new Bundle();
                     intent.putExtra("requestCode",reportCode);
                     startActivity(intent);

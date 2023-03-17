@@ -54,7 +54,7 @@ class ScreenListReport : AppCompatActivity() {
 
                             intent.putExtra("materialCode", itemMaterial?.materialCode)
                             intent.putExtra("inputCode",itemMaterial?.inputCode)
-                            intent.putExtra("areaCode",response.body()!!.data?.areaCode)
+//                            intent.putExtra("areaCode",response.body()!!.data?.areaCode)
                             intent.putExtra("item",itemMaterial)
                             startActivity(intent)
                         }
