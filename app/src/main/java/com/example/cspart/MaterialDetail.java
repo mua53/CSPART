@@ -155,7 +155,7 @@ public class MaterialDetail extends AppCompatActivity {
         btnImage.setOnClickListener(new GoToScreenViewInmage());
 
         Button btnSave = (Button) findViewById(R.id.btnSaveMDetail);
-        btnSave.setOnClickListener(new SaveDetail());
+        btnSave.setOnClickListener(new TestA());
     }
 
     public class TestA implements View.OnClickListener{
@@ -164,7 +164,7 @@ public class MaterialDetail extends AppCompatActivity {
             if (!"AWW004A787C0-1C5".contains(material.getMaterialCode()) && material.getTypeMaterial() == true){
                 Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                 return;
-            } else if (!"AWW004A787C0-1C5".contains(material.getMaterialCode()) && !"AWW004A787C0-1C5".contains("@") && material.getTypeMaterial() == false) {
+            } else if (!"AWW004A787C0-1C5".contains(material.getMaterialCode()) || !"AWW004A787C0-1C5".contains("@") && material.getTypeMaterial() == false) {
                 Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -260,7 +260,6 @@ public class MaterialDetail extends AppCompatActivity {
                     }
                 }
                 connection.close();
-                Save();
             } catch (ConnectionException e) {
                 Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (ZebraPrinterLanguageUnknownException e) {
@@ -268,6 +267,8 @@ public class MaterialDetail extends AppCompatActivity {
             }
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
+            } finally {
+                Save();
             }
         }
     }

@@ -173,7 +173,7 @@ public class ScreenReportDetail extends AppCompatActivity {
                 if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == true){
                     Toast.makeText(ScreenReportDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                     return;
-                } else if (!qrCodeStr.contains(material.getMaterialCode()) && qrCodeStr.contains("@") && material.getTypeMaterial() == false) {
+                } else if (!qrCodeStr.contains(material.getMaterialCode()) || qrCodeStr.contains("@") && material.getTypeMaterial() == false) {
                     Toast.makeText(ScreenReportDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                     return;
                 }
