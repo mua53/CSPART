@@ -249,7 +249,6 @@ public class MaterialDetail extends AppCompatActivity {
                         Date date = new Date();
                         String dateString = formatter.format(date);
                         zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCode + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
-                        Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + zplBitmap, Toast.LENGTH_LONG).show();
                         printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
                     } catch (WriterException e) {
                         e.printStackTrace();
