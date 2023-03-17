@@ -93,10 +93,10 @@ public class MaterialDetail extends AppCompatActivity {
         getSupportActionBar().setTitle("  CS PART");
         bindingData();
         initAction();
-        barcode2DWithSoft=Barcode2DWithSoft.getInstance();
-        LayoutInflater layoutinflater = getLayoutInflater();
-        new InitTask().execute();
-        registerScannerReceiver();
+//        barcode2DWithSoft=Barcode2DWithSoft.getInstance();
+//        LayoutInflater layoutinflater = getLayoutInflater();
+//        new InitTask().execute();
+//        registerScannerReceiver();
     }
 
     /**
@@ -178,38 +178,42 @@ public class MaterialDetail extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            SharedPreferences sharedPreferences = getSharedPreferences("my_shared_preff", 0);
-            String userName = sharedPreferences.getString("code","");
-            EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
-            String numberDone = edtMaterialNumber.getText().toString();
-            int intNumberDone = Integer.parseInt(numberDone);
-            int intNUmberRequest = material.getQuantityRequest();
-            if (intNumberDone > intNUmberRequest) {
-                Toast.makeText(MaterialDetail.this,"Số lượng nhập lớn hơn yêu cầu",Toast.LENGTH_SHORT).show();
-                edtMaterialNumber.setBackgroundResource(R.drawable.error_background);
-                return;
-            }else {
-                edtMaterialNumber.setBackgroundResource(R.drawable.normal_background);
-                ExportWareHouseDataRequest dataRequest = new ExportWareHouseDataRequest(
-                        material.getRequestCode(),
-                        material.getMaterialCode(),
-                        intNumberDone,
-                        listSerialCode,
-                        userName
-                );
-                RetrofitClient.INSTANCE.getInstance().updateExportWarehouse(dataRequest).enqueue(new Callback<UpdateExportWareHouseResponse>() {
-                    @Override
-                    public void onResponse(Call<UpdateExportWareHouseResponse> call, Response<UpdateExportWareHouseResponse> response) {
-                        Toast.makeText(MaterialDetail.this,response.body().getMessage(),Toast.LENGTH_SHORT).show();
-                        onBackPressed();
-                    }
+            Save();
+        }
+    }
 
-                    @Override
-                    public void onFailure(Call<UpdateExportWareHouseResponse> call, Throwable t) {
-                        Toast.makeText(MaterialDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
+    private void Save(){
+        SharedPreferences sharedPreferences = getSharedPreferences("my_shared_preff", 0);
+        String userName = sharedPreferences.getString("code","");
+        EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
+        String numberDone = edtMaterialNumber.getText().toString();
+        int intNumberDone = Integer.parseInt(numberDone);
+        int intNUmberRequest = material.getQuantityRequest();
+        if (intNumberDone > intNUmberRequest) {
+            Toast.makeText(MaterialDetail.this,"Số lượng nhập lớn hơn yêu cầu",Toast.LENGTH_SHORT).show();
+            edtMaterialNumber.setBackgroundResource(R.drawable.error_background);
+            return;
+        }else {
+            edtMaterialNumber.setBackgroundResource(R.drawable.normal_background);
+            ExportWareHouseDataRequest dataRequest = new ExportWareHouseDataRequest(
+                    material.getRequestCode(),
+                    material.getMaterialCode(),
+                    intNumberDone,
+                    listSerialCode,
+                    userName
+            );
+            RetrofitClient.INSTANCE.getInstance().updateExportWarehouse(dataRequest).enqueue(new Callback<UpdateExportWareHouseResponse>() {
+                @Override
+                public void onResponse(Call<UpdateExportWareHouseResponse> call, Response<UpdateExportWareHouseResponse> response) {
+                    Toast.makeText(MaterialDetail.this,response.body().getMessage(),Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                }
+
+                @Override
+                public void onFailure(Call<UpdateExportWareHouseResponse> call, Throwable t) {
+                    Toast.makeText(MaterialDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
@@ -250,15 +254,17 @@ public class MaterialDetail extends AppCompatActivity {
                         String dateString = formatter.format(date);
                         zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCode + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
                         printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
+                        listSerialCode.add(serialCode);
                     } catch (WriterException e) {
                         e.printStackTrace();
                     }
                 }
                 connection.close();
+                Save();
             } catch (ConnectionException e) {
-                Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_SHORT).show();
             } catch (ZebraPrinterLanguageUnknownException e) {
-                Toast.makeText(MaterialDetail.this, "Lỗi ngôn ngữ:" + e.getMessage(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(MaterialDetail.this, "Lỗi ngôn ngữ:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());

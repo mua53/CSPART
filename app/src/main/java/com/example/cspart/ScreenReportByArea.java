@@ -208,7 +208,25 @@ public class ScreenReportByArea extends AppCompatActivity {
             String qrCodeStr = bundle.getString("text");
             if (qrCodeStr != "" && qrCodeStr != null) {
                 qrCodeStr = qrCodeStr.trim();
-                EditText edtMaterialCode = (EditText) findViewById(R.id.edtReportByAreaMaterialCode);
+
+                if (qrCodeStr.contains("#")) {
+                    qrCodeStr= qrCodeStr.replace("#","");
+                    String stringQRCode = "";
+                    for (int i = 0; i < lstAreaCode.size(); i++) {
+                        if (lstAreaCode.get(i).contains(qrCodeStr)) {
+                            stringQRCode = lstAreaCode.get(i);
+                        }
+                    }
+                    int spinnerPosition = lstAreaCode.indexOf(stringQRCode);
+                    if (spinnerPosition == -1) {
+                        Toast.makeText(ScreenReportByArea.this, "Vị trí này không tồn tại", Toast.LENGTH_SHORT).show();
+                    }else {
+                        Spinner dropdown = findViewById(R.id.spinnerReportArea);
+                        dropdown.setSelection(spinnerPosition);
+                    }
+                    return;
+                }
+
                 if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == true) {
                     Toast.makeText(ScreenReportByArea.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                     return;
