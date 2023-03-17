@@ -53,7 +53,9 @@ import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
 import com.zebra.sdk.printer.ZebraPrinterLinkOs;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -228,7 +230,10 @@ public class MaterialDetail extends AppCompatActivity {
                             }
                         }
                         String zplBitmap = Ultis.getZplCode(bmp, false);
-                        zplBitmap = "^XA " + zplBitmap + "  ^CF0,35^FO120,50^FD" + serialCode + "^FS ^XZ";
+                        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                        Date date = new Date();
+                        String dateString = formatter.format(date);
+                        zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^" + serialCode + "^FS" + "^FO120,80^" + dateString +"^FS ^XZ";
 //                        Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + zplBitmap, Toast.LENGTH_LONG).show();
                         printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
                     } catch (WriterException e) {
@@ -489,7 +494,10 @@ public class MaterialDetail extends AppCompatActivity {
                 if (qrCodeStr != "" && qrCodeStr != null) {
                     qrCodeStr = qrCodeStr.trim();
 
-                    if (!material.getSerialCode().contains(qrCodeStr)){
+                    if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == true){
+                        Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (!qrCodeStr.contains(material.getMaterialCode()) && qrCodeStr.contains("@") && material.getTypeMaterial() == false) {
                         Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                         return;
                     }
