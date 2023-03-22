@@ -99,7 +99,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
             ArrayList<String> stringAreaCode = new ArrayList<String>();
             for(int i = 0; i < lstArea.size(); i++) {
                 Area area = lstArea.get(i);
-                stringAreaCode.add(area.getAreaCode());
+                stringAreaCode.add(area.getAreaCode() + " - Số lượng: " + area.getQuantityInArea());
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, stringAreaCode);
             dropdown.setAdapter(adapter);
@@ -164,7 +164,10 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
         EditText edtMaterialNumber = (EditText) findViewById(R.id.edtExportMaterialNumber);
         String numberDone = edtMaterialNumber.getText().toString();
         Spinner mySpinner = (Spinner) findViewById(R.id.edtExportArea);
-        String codeArea = mySpinner.getSelectedItem().toString();
+//        String codeArea = mySpinner.getSelectedItem().toString();
+        int positionCodeArea = mySpinner.getSelectedItemPosition();
+        List<Area> lstArea = material.getDetail();
+        String codeArea = lstArea.get(positionCodeArea).getAreaCode();
         int intNumberDone = Integer.parseInt(numberDone);
         int intNumberRequest = material.getQuantityRequest();
         if (intNumberDone > intNumberRequest) {
@@ -213,7 +216,17 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
             if (qrCodeStr != "" && qrCodeStr != null) {
                 qrCodeStr = qrCodeStr.trim();
 
-                if (!material.getSerialNumber().contains(qrCodeStr)){
+                if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == true){
+                    Toast.makeText(ScreenMaterialExportDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (qrCodeStr.contains("@") && material.getTypeMaterial() == true){
+                    Toast.makeText(ScreenMaterialExportDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                else if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == false){
+                    Toast.makeText(ScreenMaterialExportDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (!qrCodeStr.contains("@") && material.getTypeMaterial() == false) {
                     Toast.makeText(ScreenMaterialExportDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                     return;
                 }

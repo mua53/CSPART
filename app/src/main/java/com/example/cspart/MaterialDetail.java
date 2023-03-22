@@ -155,7 +155,7 @@ public class MaterialDetail extends AppCompatActivity {
         btnImage.setOnClickListener(new GoToScreenViewInmage());
 
         Button btnSave = (Button) findViewById(R.id.btnSaveMDetail);
-        btnSave.setOnClickListener(new TestA());
+        btnSave.setOnClickListener(new SaveDetail());
     }
 
     public class TestA implements View.OnClickListener{
@@ -169,8 +169,6 @@ public class MaterialDetail extends AppCompatActivity {
                 return;
             }
         }
-
-
     }
 
 
@@ -268,7 +266,9 @@ public class MaterialDetail extends AppCompatActivity {
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
             } finally {
-                Save();
+                if(!material.getTypeMaterial()) {
+                    Save();
+                }
             }
         }
     }
@@ -518,7 +518,14 @@ public class MaterialDetail extends AppCompatActivity {
                     if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == true){
                         Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                         return;
-                    } else if ((!qrCodeStr.contains(material.getMaterialCode()) && !qrCodeStr.contains("@")) && material.getTypeMaterial() == false) {
+                    } else if (qrCodeStr.contains("@") && material.getTypeMaterial() == true){
+                        Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    else if (!qrCodeStr.contains(material.getMaterialCode()) && material.getTypeMaterial() == false){
+                        Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
+                        return;
+                    } else if (!qrCodeStr.contains("@") && material.getTypeMaterial() == false) {
                         Toast.makeText(MaterialDetail.this, "Vật tư không tồn tại!!!", Toast.LENGTH_SHORT).show();
                         return;
                     }

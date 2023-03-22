@@ -17,5 +17,6 @@ data class MaterialInput(
     var areaName:String?,
     var lstArea: List<Area>?,
     var detail: List<Area>?,
-    var lstSerialDetail: List<SerialDetail>?
+    var lstSerialDetail: List<SerialDetail>?,
+    var quantityInArea:Int?
 ): java.io.Serializable
