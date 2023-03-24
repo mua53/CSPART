@@ -59,7 +59,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Số lượng"
+        android:text="Số lượng: 5/10"
         app:layout_constraintStart_toStartOf="@+id/txExportNumber"
         app:layout_constraintTop_toBottomOf="@+id/edtExportMaterialCode" />
 
@@ -72,6 +72,7 @@
         android:ems="10"
         android:inputType="number"
         android:minHeight="48dp"
+        android:text="5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txtExportNumber"
         app:layout_constraintTop_toBottomOf="@+id/txtExportNumber"

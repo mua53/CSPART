@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,12 +22,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.cspart.api.RetrofitClient;
+import com.example.cspart.common.Ultis;
 import com.example.cspart.models.Area;
 import com.example.cspart.models.InputUpdateResponse;
 import com.example.cspart.models.MaterialInput;
 import com.example.cspart.models.PackListRequest;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
+import com.zebra.sdk.comm.BluetoothConnection;
+import com.zebra.sdk.comm.Connection;
+import com.zebra.sdk.comm.ConnectionException;
+import com.zebra.sdk.printer.PrinterStatus;
+import com.zebra.sdk.printer.SGD;
+import com.zebra.sdk.printer.ZebraPrinter;
+import com.zebra.sdk.printer.ZebraPrinterFactory;
+import com.zebra.sdk.printer.ZebraPrinterLanguageUnknownException;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -47,6 +64,8 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
     String inputCode;
     ArrayList<String> lstSerialCode = new ArrayList<String>();
     ArrayList<String> lstSerialCodeBase = new ArrayList<String>();
+
+    private Connection connection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,6 +208,15 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<InputUpdateResponse> call, Response<InputUpdateResponse> response) {
                     Toast.makeText(ScreenMaterialExportDetail.this,response.body().getMessage(),Toast.LENGTH_SHORT).show();
+                    if (material.getTypeMaterial()) {
+                        try {
+                            bindingDataPrint();
+                        } catch (ConnectionException e) {
+                            Toast.makeText(ScreenMaterialExportDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        } catch (ZebraPrinterLanguageUnknownException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                     onBackPressed();
                 }
 
@@ -199,6 +227,87 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
             });
         }
         return;
+    }
+
+    private void bindingDataPrint() throws ConnectionException, ZebraPrinterLanguageUnknownException {
+        connection = getZebraPrinterConn();
+        connection.open();
+        ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+        getPrinterStatus();
+        PrinterStatus printerStatus = printer.getCurrentStatus();
+        String serialCode = lstSerialCode.get(0);
+        QRCodeWriter writer = new QRCodeWriter();
+        try {
+            BitMatrix bitMatrix = writer.encode(serialCode, BarcodeFormat.QR_CODE, 130, 130);
+            int width = bitMatrix.getWidth();
+            int height = bitMatrix.getHeight();
+            Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bmp.setPixel(x, y, bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE);
+                }
+            }
+            String zplBitmap = Ultis.getZplCode(bmp, false);
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            Date date = new Date();
+            String dateString = formatter.format(date);
+            EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
+            Integer numberTake = Integer.parseInt(edtMaterialNumber.getText().toString());
+            Integer totalItem = 0;
+            List<Area> areas = material.getDetail();
+            for (int i = 0; i < areas.size(); i ++) {
+                totalItem = totalItem + areas.get(i).getQuantityInArea();
+            }
+            Integer numberNotTake = totalItem - numberTake;
+            String strNumberNotTake = Integer.toString(numberNotTake);
+            zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
+                    serialCode + "^FS ^FO120,80^FD" + dateString + "^FS ^FO120,115^FD Số lượng: " + strNumberNotTake + "^FS ^XZ";
+            printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private void printPhotoFromExternal(final Bitmap bitmap, PrinterStatus printerStatus, ZebraPrinter printer, String zplBitmap, Connection connection1) {
+
+        if (printerStatus.isReadyToPrint) {
+            try {
+//                    printer.printImage(new ZebraImageAndroid(bitmap), 0, 0, 100, 100, false);
+                connection1.write(zplBitmap.getBytes());
+            } catch (ConnectionException e) {
+                Toast.makeText(ScreenMaterialExportDetail.this, "Lỗi kết nối: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        } else if (printerStatus.isHeadOpen) {
+            Toast.makeText(ScreenMaterialExportDetail.this, "Vui lòng đóng phần đầu máy in", Toast.LENGTH_LONG).show();
+        } else if (printerStatus.isPaused) {
+            Toast.makeText(ScreenMaterialExportDetail.this, "Máy in đang tạm dừng", Toast.LENGTH_LONG).show();
+        } else if (printerStatus.isPaperOut) {
+            Toast.makeText(ScreenMaterialExportDetail.this, "Máy in hết giấy", Toast.LENGTH_LONG).show();
+        } else {
+            Toast.makeText(ScreenMaterialExportDetail.this, "Lỗi không xác định", Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    private Connection getZebraPrinterConn() {
+        return new BluetoothConnection("48a49369c705");
+    }
+
+    private void getPrinterStatus() throws ConnectionException {
+        final String printerLanguage = SGD.GET("device.languages", connection);
+
+        final String displayPrinterLanguage = "Printer Language is " + printerLanguage;
+
+        SGD.SET("device.languages", "zpl", connection);
+
+        ScreenMaterialExportDetail.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(ScreenMaterialExportDetail.this, displayPrinterLanguage + "\n" + "Language set to ZPL", Toast.LENGTH_LONG).show();
+            }
+        });
+
     }
 
 

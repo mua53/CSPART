@@ -212,7 +212,7 @@ public class ScreenReportByArea extends AppCompatActivity {
             @Override
             public void onResponse(Call<InputUpdateResponse> call, Response<InputUpdateResponse> response) {
                 Toast.makeText(ScreenReportByArea.this,response.body().getMessage(),Toast.LENGTH_SHORT).show();
-                onBackPressed();
+//                onBackPressed();
             }
 
             @Override
