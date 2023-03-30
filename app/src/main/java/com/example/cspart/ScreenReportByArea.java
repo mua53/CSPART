@@ -24,6 +24,7 @@ import com.example.cspart.models.MaterialByArea;
 import com.example.cspart.models.MaterialDetailResponse;
 import com.example.cspart.models.MaterialInput;
 import com.example.cspart.models.PackListRequest;
+import com.example.cspart.models.PackingListResponse;
 import com.example.cspart.models.ReportResponse;
 
 import java.util.ArrayList;
@@ -212,7 +213,8 @@ public class ScreenReportByArea extends AppCompatActivity {
             @Override
             public void onResponse(Call<InputUpdateResponse> call, Response<InputUpdateResponse> response) {
                 Toast.makeText(ScreenReportByArea.this,response.body().getMessage(),Toast.LENGTH_SHORT).show();
-//                onBackPressed();
+                bindingData();
+                //                onBackPressed();
             }
 
             @Override
@@ -221,6 +223,25 @@ public class ScreenReportByArea extends AppCompatActivity {
             }
         });
         return;
+    }
+
+
+    private void reloadData() {
+        RetrofitClient.INSTANCE.getInstance().getPackList(inputCode).enqueue(new Callback<PackingListResponse>(){
+
+            @Override
+            public void onResponse(Call<PackingListResponse> call, Response<PackingListResponse> response) {
+                if(response.body().getStatus() == 1) {
+                    List<MaterialInput> materials = response.body().getMaterial();
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PackingListResponse> call, Throwable t) {
+                Toast.makeText(ScreenReportByArea.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     /*

@@ -139,6 +139,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
         public void onClick(View v) {
             try {
                 save();
+//                bindingDataPrint();
             }
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
@@ -214,7 +215,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
                         } catch (ConnectionException e) {
                             Toast.makeText(ScreenMaterialExportDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         } catch (ZebraPrinterLanguageUnknownException e) {
-                            throw new RuntimeException(e);
+                            Toast.makeText(ScreenMaterialExportDetail.this, "Lỗi ngôn ngữ:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
                     onBackPressed();
@@ -236,6 +237,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
         getPrinterStatus();
         PrinterStatus printerStatus = printer.getCurrentStatus();
         String serialCode = lstSerialCode.get(0);
+//        String serialCode = "Debug";
         QRCodeWriter writer = new QRCodeWriter();
         try {
             BitMatrix bitMatrix = writer.encode(serialCode, BarcodeFormat.QR_CODE, 130, 130);
@@ -251,7 +253,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
             SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
             Date date = new Date();
             String dateString = formatter.format(date);
-            EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
+            EditText edtMaterialNumber = (EditText) findViewById(R.id.edtExportMaterialNumber);
             Integer numberTake = Integer.parseInt(edtMaterialNumber.getText().toString());
             Integer totalItem = 0;
             List<Area> areas = material.getDetail();
@@ -260,12 +262,13 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
             }
             Integer numberNotTake = totalItem - numberTake;
             String strNumberNotTake = Integer.toString(numberNotTake);
-            zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
-                    serialCode + "^FS ^FO120,80^FD" + dateString + "^FS ^FO120,115^FD Số lượng: " + strNumberNotTake + "^FS ^XZ";
+            zplBitmap = "^XA " + zplBitmap + "  ^CF0,17^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
+                    serialCode + "^FS ^FO120,80^FD" + dateString + " - SL: " + strNumberNotTake + "^FS ^XZ";
             printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
         } catch (WriterException e) {
             e.printStackTrace();
         }
+        connection.close();
     }
 
 

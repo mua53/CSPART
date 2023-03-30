@@ -253,10 +253,10 @@ public class MaterialDetail extends AppCompatActivity {
                         if(material.getTypeMaterial()){
                             EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
                             String numberTake = edtMaterialNumber.getText().toString();
-                            zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
-                                    serialCode + "^FS ^FO120,80^FD" + dateString +"^FS ^FO120,115^FD Số lượng: " + numberTake + "^FS ^XZ";
+                            zplBitmap = "^XA " + zplBitmap + "  ^CF0,17^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
+                                    serialCode + "^FS ^FO120,80^FD" + dateString +" - SL:"+ numberTake +"^FS ^XZ";
                         } else {
-                            zplBitmap = "^XA " + zplBitmap + "  ^CF0,25^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCode + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
+                            zplBitmap = "^XA " + zplBitmap + "  ^CF0,17^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCode + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
                         }
                         printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
                         listSerialCode.add(serialCode);
