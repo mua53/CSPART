@@ -18,6 +18,7 @@ import retrofit2.Response
 
 class ScreenListExportWarehouse : AppCompatActivity() {
     private var exportWarehouseCode: String = ""
+    private var currentPoint: Int = 0
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +50,7 @@ class ScreenListExportWarehouse : AppCompatActivity() {
                         val list = listOf(exportWarehouseCode)
                         listView.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i:Int, l:Long ->
                             val itemAtPos  = adapterView.getItemAtPosition(i)
+                            currentPoint = i
                             var itemMaterial = listMaterial?.get(i)
                             val intent = Intent(applicationContext, ScreenMaterialExportDetail::class.java)
 
@@ -57,11 +59,13 @@ class ScreenListExportWarehouse : AppCompatActivity() {
                             intent.putExtra("item",itemMaterial)
                             startActivity(intent)
                         }
+                        listView.setSelection(currentPoint)
                     }else{
                         Toast.makeText(applicationContext, response.body()?.message, Toast.LENGTH_LONG).show()
                     }
                 }
             })
+
     }
 
     override fun onResume() {

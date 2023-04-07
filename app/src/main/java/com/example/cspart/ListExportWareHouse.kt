@@ -16,6 +16,7 @@ import retrofit2.Response
 
 class ListExportWareHouse : AppCompatActivity() {
     private var requestCode: String = ""
+    private var currentPoint: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_list_export_ware_house)
@@ -66,6 +67,7 @@ class ListExportWareHouse : AppCompatActivity() {
                         val list = listOf(requestCode)
                         listView.setOnItemClickListener { adapterView:AdapterView<*>, view:View, i:Int, l:Long ->
                             val itemAtPos  = adapterView.getItemAtPosition(i)
+                            currentPoint = i
                             var itemMaterial = listMaterial[i]
                             val intent = Intent(applicationContext, MaterialDetail::class.java)
                             intent.putExtra("requestCode",itemMaterial.requestCode)
@@ -73,6 +75,7 @@ class ListExportWareHouse : AppCompatActivity() {
                             intent.putExtra("item",itemMaterial)
                             startActivity(intent)
                         }
+                        listView.setSelection(currentPoint)
                     }else{
                         Toast.makeText(applicationContext, response.body()?.message, Toast.LENGTH_LONG).show()
                     }

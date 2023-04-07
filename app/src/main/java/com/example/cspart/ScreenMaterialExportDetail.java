@@ -240,7 +240,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
 //        String serialCode = "Debug";
         QRCodeWriter writer = new QRCodeWriter();
         try {
-            BitMatrix bitMatrix = writer.encode(serialCode, BarcodeFormat.QR_CODE, 130, 130);
+            BitMatrix bitMatrix = writer.encode(serialCode, BarcodeFormat.QR_CODE, 120, 120);
             int width = bitMatrix.getWidth();
             int height = bitMatrix.getHeight();
             Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
@@ -262,7 +262,7 @@ public class ScreenMaterialExportDetail extends AppCompatActivity {
             }
             Integer numberNotTake = totalItem - numberTake;
             String strNumberNotTake = Integer.toString(numberNotTake);
-            zplBitmap = "^XA " + zplBitmap + "  ^CF0,17^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
+            zplBitmap = "^XA " + zplBitmap + "  ^CF0,11^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
                     serialCode + "^FS ^FO120,80^FD" + dateString + " - SL: " + strNumberNotTake + "^FS ^XZ";
             printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
         } catch (WriterException e) {

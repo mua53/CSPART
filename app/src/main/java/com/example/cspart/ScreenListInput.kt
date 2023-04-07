@@ -16,6 +16,7 @@ import retrofit2.Response
 
 class ScreenListInput : AppCompatActivity() {
     private var requestCode: String = ""
+    private var currentPoint: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +53,7 @@ class ScreenListInput : AppCompatActivity() {
                         val list = listOf(requestCode)
                         listView.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i:Int, l:Long ->
                             val itemAtPos  = adapterView.getItemAtPosition(i)
+                            currentPoint = i
                             var itemMaterial = listMaterial?.get(i)
                             val intent = Intent(applicationContext, ScreentMaterialInputDetail::class.java)
 
@@ -60,6 +62,7 @@ class ScreenListInput : AppCompatActivity() {
                             intent.putExtra("item",itemMaterial)
                             startActivity(intent)
                         }
+                        listView.setSelection(currentPoint)
                     }else{
                         Toast.makeText(applicationContext, response.body()?.message, Toast.LENGTH_LONG).show()
                     }

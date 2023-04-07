@@ -28,6 +28,7 @@ import com.example.cspart.models.PackingListResponse;
 import com.example.cspart.models.ReportResponse;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -48,6 +49,9 @@ public class ScreenReportByArea extends AppCompatActivity {
 
     MaterialInput material;
     String inputCode;
+    String currentAreaCode = "";
+    Integer indexOfMaterial =0;
+//    MaterialInput currentMaterial = null;
     ArrayList<String> lstSerialCode = new ArrayList<String>();
     ArrayList<String> lstAreaCode = new ArrayList<String>();
     ArrayList<MaterialInput> lstMaterialInput = new ArrayList<MaterialInput>();
@@ -93,26 +97,31 @@ public class ScreenReportByArea extends AppCompatActivity {
                     Spinner dropdown = findViewById(R.id.spinnerReportArea);
                     ArrayAdapter<String> adapter = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item, lstAreaCode);
                     dropdown.setAdapter(adapter);
+                    Spinner dropdownMaterialName = findViewById(R.id.spinnerReportMaterialName);
+
                     dropdown.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                             String areaCode = "#" + dropdown.getSelectedItem().toString() + "#";
+                            currentAreaCode = dropdown.getSelectedItem().toString();
                             lstCurrentMaterialInput.clear();
                             lstMaterialName.clear();
                             lstSerialCode.clear();
+                            indexOfMaterial = 0;
                             for(int j =0; j < lstMaterialInput.size(); j++) {
                                 if (areaCode.equals(lstMaterialInput.get(j).getAreaCode())){
                                     lstMaterialName.add(lstMaterialInput.get(j).getMaterialName());
                                     lstCurrentMaterialInput.add(lstMaterialInput.get(j));
                                 }
                             }
-                            Spinner dropdownMaterialName = findViewById(R.id.spinnerReportMaterialName);
                             ArrayAdapter<String> adapter2 = new ArrayAdapter<>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item, lstMaterialName);
                             dropdownMaterialName.setAdapter(adapter2);
+                            dropdownMaterialName.setSelection(indexOfMaterial);
                             dropdownMaterialName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                 @Override
                                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                     material = lstCurrentMaterialInput.get(i);
+                                    indexOfMaterial = i;
                                     EditText edtMaterialCode = (EditText) findViewById(R.id.edtReportByAreaMaterialCode);
                                     edtMaterialCode.setText(material.getMaterialCode());
                                     EditText quantityReal = (EditText) findViewById(R.id.edtReportNumberDone);
@@ -131,6 +140,13 @@ public class ScreenReportByArea extends AppCompatActivity {
 
                         }
                     });
+
+                    if (!currentAreaCode.isEmpty()) {
+                        int indexAreaCode = lstAreaCode.indexOf(currentAreaCode);
+                        if (indexAreaCode != -1) {
+                            dropdown.setSelection(indexAreaCode);
+                        }
+                    }
                 }
             }
 
