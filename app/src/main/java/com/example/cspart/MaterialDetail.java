@@ -93,10 +93,6 @@ public class MaterialDetail extends AppCompatActivity {
         getSupportActionBar().setTitle("  CS PART");
         bindingData();
         initAction();
-//        barcode2DWithSoft=Barcode2DWithSoft.getInstance();
-//        LayoutInflater layoutinflater = getLayoutInflater();
-//        new InitTask().execute();
-//        registerScannerReceiver();
     }
 
     /**
@@ -126,11 +122,13 @@ public class MaterialDetail extends AppCompatActivity {
             spinnerDrop.setAdapter(adapter);
             if (material.getTypeMaterial() == false) {
                 spinnerDrop.setSelection(0);
+                edtMaterialNumber.setEnabled(false);
             } else {
                 spinnerDrop.setSelection(1);
                 EditText edtPrint = (EditText) findViewById(R.id.edtPrint);
                 edtPrint.setText("1");
                 edtPrint.setEnabled(false);
+                edtMaterialNumber.setEnabled(true);
             }
             spinnerDrop.setEnabled(false);
             lstImage = material.getMaterialImage();
@@ -200,16 +198,20 @@ public class MaterialDetail extends AppCompatActivity {
                     listSerialCode,
                     userName
             );
+            Button btnSave = (Button) findViewById(R.id.btnSaveMDetail);
+            btnSave.setEnabled(false);
             RetrofitClient.INSTANCE.getInstance().updateExportWarehouse(dataRequest).enqueue(new Callback<UpdateExportWareHouseResponse>() {
                 @Override
                 public void onResponse(Call<UpdateExportWareHouseResponse> call, Response<UpdateExportWareHouseResponse> response) {
                     Toast.makeText(MaterialDetail.this,response.body().getMessage(),Toast.LENGTH_SHORT).show();
+                    btnSave.setEnabled(true);
                     onBackPressed();
                 }
 
                 @Override
                 public void onFailure(Call<UpdateExportWareHouseResponse> call, Throwable t) {
                     Toast.makeText(MaterialDetail.this,t.getMessage(),Toast.LENGTH_SHORT).show();
+                    btnSave.setEnabled(true);
                 }
             });
         }
@@ -226,19 +228,23 @@ public class MaterialDetail extends AppCompatActivity {
         public void onClick(View v) {
             try {
                 List<String> lstSerialCode = material.getSerialCode();
-//                connection = getZebraPrinterConn();
-//                connection.open();
-//                ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
-//                getPrinterStatus();
-//                PrinterStatus printerStatus = printer.getCurrentStatus();
+                connection = getZebraPrinterConn();
+                connection.open();
+                ZebraPrinter printer = ZebraPrinterFactory.getInstance(connection);
+                getPrinterStatus();
+                PrinterStatus printerStatus = printer.getCurrentStatus();
                 EditText edtPrint = (EditText) findViewById(R.id.edtPrint);
                 int numberPrint = Integer.parseInt(edtPrint.getText().toString());
+//                if (numberPrint > 10){
+//                    Toast.makeText(MaterialDetail.this, "Số lượng in không được vượt quá 10", Toast.LENGTH_SHORT).show();
+//                    return;
+//                }
                 String zplBitmap = "";
                 for (int i =0; i < numberPrint; i++) {
                     String serialCode = lstSerialCode.get(i);
                     QRCodeWriter writer = new QRCodeWriter();
                     try {
-                        BitMatrix bitMatrix = writer.encode(serialCode, BarcodeFormat.QR_CODE, 120, 120);
+                        BitMatrix bitMatrix = writer.encode(serialCode, BarcodeFormat.QR_CODE, 115, 115);
                         int width = bitMatrix.getWidth();
                         int height = bitMatrix.getHeight();
                         Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
@@ -251,74 +257,72 @@ public class MaterialDetail extends AppCompatActivity {
                         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
                         Date date = new Date();
                         String dateString = formatter.format(date);
-//                        if(material.getTypeMaterial()){
-//                            EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
-//                            String numberTake = edtMaterialNumber.getText().toString();
-//                            zplBitmap = "^XA " + zplBitmap + "  ^CF0,17^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
-//                                    serialCode + "^FS ^FO120,80^FD" + dateString +" - SL:"+ numberTake +"^FS ^XZ";
-//                        } else {
-//                            zplBitmap = "^XA " + zplBitmap + "  ^CF0,17^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCode + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
-//                        }
+                        String materialName = material.getMaterialName();
+                        if (materialName.length() > 20) {
+                            materialName = materialName.substring(0, 19);
+                        } else {
+                            materialName = materialName;
+                        }
                         if(i%2 == 0) {
                             if(material.getTypeMaterial()){
                                 EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
                                 String numberTake = edtMaterialNumber.getText().toString();
-                                zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,11^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
+                                zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,13^FO120,30^FD" + materialName + "^FS ^FO120,55^FD" +
                                         serialCode + "^FS ^FO120,80^FD" + dateString +" - SL:"+ numberTake +"^FS";
                             } else {
                                 int index = serialCode.indexOf("@");
                                 String serialCodeSub = "";
                                 if(index > 0){
-                                    if (serialCode.length() > 15) {
-                                        serialCodeSub = serialCode.substring(0, 15);
+                                    if (serialCode.length() > 20) {
+                                        serialCodeSub = serialCode.substring(0, 19);
                                     } else {
                                         serialCodeSub = serialCode;
                                     }
                                 }
-                                zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,11^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCodeSub + "^FS" + "^FO120,80^FD" + dateString +"^FS";
+                                zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,13^FO120,30^FD" + materialName + "^FS ^FO120,55^FD" + serialCodeSub + "^FS" + "^FO120,80^FD" + dateString +"^FS";
                             }
                             if(i == numberPrint-1) {
                                 if(material.getTypeMaterial()){
                                     EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
                                     String numberTake = edtMaterialNumber.getText().toString();
-                                    zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,11^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" +
+                                    zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,13^FO120,30^FD" + materialName + "^FS ^FO120,55^FD" +
                                             serialCode + "^FS ^FO120,80^FD" + dateString +" - SL:"+ numberTake +"^FS ^XZ";
                                 } else {
                                     int index = serialCode.indexOf("@");
                                     String serialCodeSub = "";
                                     if(index > 0){
-                                        if (serialCode.length() > 15) {
-                                            serialCodeSub = serialCode.substring(0, 15);
+                                        if (serialCode.length() > 20) {
+                                            serialCodeSub = serialCode.substring(0, 19);
                                         } else {
                                             serialCodeSub = serialCode;
                                         }
                                     }
-                                    zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,11^FO120,30^FD" + material.getMaterialName() + "^FS ^FO120,55^FD" + serialCodeSub + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
+                                    zplBitmap = "^XA " + zplBitmapCode + "  ^CF0,13^FO120,30^FD" + materialName + "^FS ^FO120,55^FD" + serialCodeSub + "^FS" + "^FO120,80^FD" + dateString +"^FS ^XZ";
                                 }
-//                                printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
-//                                printPhotoFromExternal(bmp, printerStatus, printer, "", connection);
+                                printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
+                                printPhotoFromExternal(bmp, printerStatus, printer, "", connection);
                             }
                         } else {
                             if(material.getTypeMaterial()){
                                 EditText edtMaterialNumber = (EditText) findViewById(R.id.edtMaterialNumber);
                                 String numberTake = edtMaterialNumber.getText().toString();
-                                zplBitmap = zplBitmap + "^FO290,0^FD " + zplBitmapCode + "^FS  ^CF0,11^FO400,30^FD" + material.getMaterialName() + "^FS ^FO400,55^FD" +
+                                zplBitmap = zplBitmap + "^FO290,0^FD " + zplBitmapCode + "^FS  ^CF0,13^FO400,30^FD" + materialName + "^FS ^FO400,55^FD" +
                                         serialCode + "^FS ^FO120,80^FD" + dateString +" - SL:"+ numberTake +"^FS ^XZ";
                             } else {
                                 int index = serialCode.indexOf("@");
                                 String serialCodeSub = "";
                                 if(index > 0){
-                                    if (serialCode.length() > 15) {
-                                        serialCodeSub = serialCode.substring(0, 15);
+                                    if (serialCode.length() > 20) {
+                                        serialCodeSub = serialCode.substring(0, 19);
                                     } else {
                                         serialCodeSub = serialCode;
                                     }
                                 }
-                                zplBitmap = zplBitmap + "^FO290,0^FD " + zplBitmapCode + "^FS  ^CF0,11^FO400,30^FD" + material.getMaterialName() + "^FS ^FO400,55^FD" + serialCodeSub + "^FS" + "^FO400,80^FD" + dateString +"^FS ^XZ";
+                                zplBitmap = zplBitmap + "^FO290,0^FD " + zplBitmapCode + "^FS  ^CF0,13^FO400,30^FD" + materialName + "^FS ^FO400,55^FD" + serialCodeSub + "^FS" + "^FO400,80^FD" + dateString +"^FS ^XZ";
                             }
-//                            printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
+                            printPhotoFromExternal(bmp, printerStatus, printer, zplBitmap, connection);
                             if (i == numberPrint-1) {
-//                                printPhotoFromExternal(bmp, printerStatus, printer, "", connection);
+                                printPhotoFromExternal(bmp, printerStatus, printer, "", connection);
                             }
                         }
                         listSerialCode.add(serialCode);
@@ -329,7 +333,7 @@ public class MaterialDetail extends AppCompatActivity {
                 connection.close();
             } catch (ConnectionException e) {
                 Toast.makeText(MaterialDetail.this, "Lỗi kết nối:" + e.getMessage(), Toast.LENGTH_SHORT).show();
-//            } catch (ZebraPrinterLanguageUnknownException e) {
+            } catch (ZebraPrinterLanguageUnknownException e) {
 //                Toast.makeText(MaterialDetail.this, "Lỗi ngôn ngữ:" + e.getMessage(), Toast.LENGTH_LONG).show();
             }
             catch (Exception e) {
@@ -646,29 +650,12 @@ public class MaterialDetail extends AppCompatActivity {
         }
     };
 
-    public void registerScannerReceiver() {
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_RECEIVE_DATA);
-        filter.addAction(ACTION_RECEIVE_DATABYTES);
-        filter.addAction(ACTION_RECEIVE_DATALENGTH);
-        filter.addAction(ACTION_RECEIVE_DATATYPE);
-        registerReceiver(mScanReceiver,filter);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        unregisterReceiver(mScanReceiver);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_RECEIVE_DATA);
-        filter.addAction(ACTION_RECEIVE_DATABYTES);
-        filter.addAction(ACTION_RECEIVE_DATALENGTH);
-        filter.addAction(ACTION_RECEIVE_DATATYPE);
-        registerReceiver(mScanReceiver,filter);
-    }
+//    public void registerScannerReceiver() {
+//        IntentFilter filter = new IntentFilter();
+//        filter.addAction(ACTION_RECEIVE_DATA);
+//        filter.addAction(ACTION_RECEIVE_DATABYTES);
+//        filter.addAction(ACTION_RECEIVE_DATALENGTH);
+//        filter.addAction(ACTION_RECEIVE_DATATYPE);
+//        registerReceiver(mScanReceiver,filter);
+//    }
 }

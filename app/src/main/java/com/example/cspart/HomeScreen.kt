@@ -26,6 +26,7 @@ class HomeScreen : AppCompatActivity() {
         val btnDeliveryBill = findViewById<Button>(R.id.btnDeliveryBill)
         val btnReport = findViewById<Button>(R.id.btnReport)
         val btnStatusDelivery = findViewById<Button>(R.id.btnStatusDelivery)
+        val btnPrintQR = findViewById<Button>(R.id.btnPrintTemp)
 //        val btnLogout = findViewById<Button>(R.id.btnLogout)
 
         btnDeliveryRequestForm.setOnClickListener { moveScreenDeliveryRequestForm() }
@@ -33,6 +34,7 @@ class HomeScreen : AppCompatActivity() {
         btnDeliveryBill.setOnClickListener { moveScreenDeliveryBill() }
         btnReport.setOnClickListener { moveScreenReport() }
         btnStatusDelivery.setOnClickListener { moveScreenStatusDelivery() }
+        btnPrintQR.setOnClickListener { moveScreenPrintTemp() }
 //        btnLogout.setOnClickListener { logOut() }
     }
 
@@ -73,4 +75,8 @@ class HomeScreen : AppCompatActivity() {
         startActivity(intent)
     }
 
+    fun moveScreenPrintTemp() {
+        val intent = Intent(applicationContext, PrintTemp::class.java)
+        startActivity(intent)
+    }
 }
