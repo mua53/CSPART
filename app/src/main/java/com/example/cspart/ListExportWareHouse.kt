@@ -57,9 +57,10 @@ class ListExportWareHouse : AppCompatActivity() {
     private fun bindingListViewSearch(textSearch: String){
         var listExportWareHouse = this
         var filterQuery = ArrayList<Material>()
+        var search = textSearch.lowercase()
         for (item in listArray){
-            if(item.orderNumber.toString().lowercase().contains(textSearch) || item.materialCode?.lowercase()
-                    ?.contains(textSearch) == true || item.materialName?.lowercase()?.contains(textSearch) == true){
+            if(item.orderNumber.toString().lowercase().contains(search) || item.materialCode?.lowercase()
+                    ?.contains(search) == true || item.materialName?.lowercase()?.contains(search) == true){
                 filterQuery.add(item)
             }
         }

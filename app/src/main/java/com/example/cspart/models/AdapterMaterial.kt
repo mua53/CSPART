@@ -22,9 +22,11 @@ class AdapterMaterial(context: Context, layoutInt: Int, var arrayList: List<Mate
         val name: TextView = view.findViewById(R.id.txtMaterialName)
         val code: TextView = view.findViewById(R.id.txtMaterialCode)
         var total: TextView = view.findViewById(R.id.txtTotal)
+        var no: TextView = view.findViewById(R.id.txtNo)
 
         name.text = arrayList[position].materialName
         code.text = arrayList[position].materialCode
+        no.text = arrayList[position].orderNumber.toString()
 
         total.text = arrayList[position].quantityGet.toString() + "/" + arrayList[position].quantityRequest.toString()
 

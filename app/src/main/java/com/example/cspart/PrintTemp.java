@@ -95,7 +95,13 @@ public class PrintTemp extends AppCompatActivity {
                     String zplBitmap = "";
                     for (int i = indexStart; i <= indexEnd; i++) {
                         QRCodeWriter writer = new QRCodeWriter();
-                        String serialCodeTypeBig = serialCode + "@0" + i;
+                        String serialCodeTypeBig = "";
+                        if(i < 10) {
+                            serialCodeTypeBig = serialCode + "@0" + i;
+                        } else {
+                            serialCodeTypeBig = serialCode + "@" + i;
+                        }
+
                         BitMatrix bitMatrix = writer.encode(serialCodeTypeBig, BarcodeFormat.QR_CODE, 115, 115);
                         int width = bitMatrix.getWidth();
                         int height = bitMatrix.getHeight();

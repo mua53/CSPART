@@ -25,6 +25,7 @@ import com.example.cspart.models.Input;
 import com.example.cspart.models.InputUpdateResponse;
 import com.example.cspart.models.MaterialInput;
 import com.example.cspart.models.PackListRequest;
+import com.example.cspart.models.SerialDetail;
 import com.example.cspart.storage.SharedPrefManager;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class ScreentMaterialInputDetail extends AppCompatActivity {
     ArrayList<String> lstSerialCodeBase = new ArrayList<String>();
     ArrayList<String> stringAreaCode = new ArrayList<String>();
     private static final String[] paths = {"Loại lớn", "Loại nhỏ"};
+    ArrayList<SerialDetail> lstSerialDetail = new ArrayList<SerialDetail>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,7 @@ public class ScreentMaterialInputDetail extends AppCompatActivity {
             material = (MaterialInput) getIntent().getSerializableExtra("item");
             TextView txtNameMaterial =  (TextView)findViewById(R.id.txtInputNameMaterial);
             inputCode = getIntent().getStringExtra("inputCode");
+            lstSerialDetail = (ArrayList<SerialDetail>) material.getLstSerialDetail();
             String inputCodeFull = "Mã phiếu: " + inputCode;
             lstSerialCode = (ArrayList<String>) material.getSerialNumber();
             txtNameMaterial.setText(inputCodeFull);
@@ -130,6 +133,8 @@ public class ScreentMaterialInputDetail extends AppCompatActivity {
     private void initAction(){
         Button btnSave = (Button) findViewById(R.id.btnSaveInput);
         btnSave.setOnClickListener(new SaveInput());
+        Button btnListQR = (Button) findViewById(R.id.btnListQR);
+        btnListQR.setOnClickListener(new ShowListQR());
     }
 
     public class SaveInput implements View.OnClickListener {
@@ -142,6 +147,17 @@ public class ScreentMaterialInputDetail extends AppCompatActivity {
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
             }
+        }
+    }
+
+    public class ShowListQR implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getApplicationContext(),ScreenListQRInput.class);
+            Bundle bundle = new Bundle();
+            intent.putExtra("materialDetail",material);
+            startActivity(intent);
         }
     }
 
@@ -346,6 +362,6 @@ public class ScreentMaterialInputDetail extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        unregisterReceiver(mScanReceiver);
+//        unregisterReceiver(mScanReceiver);
     }
 }

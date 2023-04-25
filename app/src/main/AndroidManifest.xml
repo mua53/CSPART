@@ -20,6 +20,9 @@
         android:theme="@style/Theme.CSPART"
         tools:targetApi="31">
         <activity
+            android:name=".ScreenListQRInput"
+            android:exported="false" />
+        <activity
             android:name=".PrintTemp"
             android:exported="false" />
         <activity

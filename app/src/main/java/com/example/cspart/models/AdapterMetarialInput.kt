@@ -22,9 +22,11 @@ class AdapterMetarialInput (context: Context, layoutInt: Int, var arrayList: Lis
         val name: TextView = view.findViewById(R.id.txtMaterialName)
         val code: TextView = view.findViewById(R.id.txtMaterialCode)
         var total: TextView = view.findViewById(R.id.txtTotal)
+        var stt: TextView = view.findViewById(R.id.txtNo)
 
         name.text = arrayList[position].materialName
         code.text = arrayList[position].materialCode
+        stt.text = arrayList[position].orderNumber.toString()
 
         total.text = arrayList[position].quantityInput.toString() + "/" + arrayList[position].quantityRequest.toString()
 

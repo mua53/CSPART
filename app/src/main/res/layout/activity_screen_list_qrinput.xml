@@ -5,22 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ScreenListExportWarehouse">
+    tools:context=".ScreenListQRInput">
 
     <androidx.appcompat.widget.SearchView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:iconifiedByDefault="false"
-        app:queryHint="Tìm kiếm"
-        android:id="@+id/export_ware_house_search"
+        app:queryHint="Tìm kiếm theo tên và mã vị trí"
+        android:id="@+id/qrcode_search"
         />
 
-    <ListView
-        android:id="@+id/lstMaterialExportDetail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="61dp"
-        tools:listitem="@layout/material_detail" />
 
+    <ListView
+        android:id="@+id/lstQRCodeInput"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>

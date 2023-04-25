@@ -9,10 +9,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import com.example.cspart.api.RetrofitClient
-import com.example.cspart.models.AdapterMaterial
 import com.example.cspart.models.AdapterMetarialInput
 import com.example.cspart.models.Input
-import com.example.cspart.models.Material
 import com.example.cspart.models.MaterialInput
 import retrofit2.Call
 import retrofit2.Callback
@@ -98,16 +96,17 @@ class ScreenListInput : AppCompatActivity() {
 
     private fun bindingListViewSearch(textSearch: String){
         var filterQuery = ArrayList<MaterialInput>()
+        var search = textSearch.lowercase()
         for (item in listArray){
-            if(item.orderNumber.toString().lowercase().contains(textSearch) || item.materialCode?.lowercase()
-                    ?.contains(textSearch) == true || item.materialName?.lowercase()?.contains(textSearch) == true){
+            if(item.orderNumber.toString().lowercase().contains(search) || item.materialCode?.lowercase()
+                    ?.contains(search) == true || item.materialName?.lowercase()?.contains(search) == true){
                 filterQuery.add(item)
             }
         }
-        var listView = findViewById<ListView>(R.id.lstMaterialDetail)
         if (filterQuery.isNullOrEmpty()) {
             return;
         }
+        var listView = findViewById<ListView>(R.id.lstMaterialInputDetail)
         listView.adapter = AdapterMetarialInput(this@ScreenListInput,R.layout.material_input_detail, filterQuery)
         listView.setOnItemClickListener { adapterView: AdapterView<*>, view: View, i:Int, l:Long ->
             currentPoint = i
