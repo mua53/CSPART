@@ -6,6 +6,14 @@
     android:layout_height="match_parent"
     tools:context=".ScreenListInput">
 
+    <androidx.appcompat.widget.SearchView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        app:iconifiedByDefault="false"
+        app:queryHint="Tìm kiếm"
+        android:id="@+id/input_search"
+        />
+
     <ListView
         android:id="@+id/lstMaterialInputDetail"
         android:layout_width="match_parent"

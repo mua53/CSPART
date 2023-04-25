@@ -14,5 +14,6 @@ data class Material(
     var quantityRequest: Int?,
     var quantityGet: Int?,
     var stt: Int?,
+    var orderNumber: Int?,
     var materialImage: List<MaterialImage>,
     var requestCode:String?) : Serializable
