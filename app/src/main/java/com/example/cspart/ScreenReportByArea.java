@@ -2,6 +2,7 @@ package com.example.cspart;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -171,12 +173,43 @@ public class ScreenReportByArea extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             try {
-                save();
+                if(material.getTypeMaterial() == true && material.getQuantityReal() > 0) {
+                    CustomDialogConfirm();
+                } else {
+                    save();
+                }
             }
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
             }
         }
+    }
+
+    public void CustomDialogConfirm() {
+        final Dialog customDialog = new Dialog(ScreenReportByArea.this);
+        customDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        customDialog.setContentView(R.layout.custom_dialog_confirm);
+        customDialog.setTitle("Xác nhận");
+
+        Button btnClose = (Button) customDialog.findViewById(R.id.btnCloseDialog);
+        Button btnSave = (Button) customDialog.findViewById(R.id.btnUpdateReport);
+        TextView txtContent = (TextView) customDialog.findViewById(R.id.txtContentMess);
+        txtContent.setText("Vật tư đã tồn tại báo cáo, bạn có muốn update không?");
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                customDialog.cancel();
+            }
+        });
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                save();
+                customDialog.cancel();
+            }
+        });
+        customDialog.show();
     }
 
     public class Test2 implements View.OnClickListener{
@@ -215,6 +248,7 @@ public class ScreenReportByArea extends AppCompatActivity {
         String materialCode = edtMaterialCode.getText().toString();
         int intNumberDone = Integer.parseInt(numberDone);
         edtMaterialNumber.setBackgroundResource(R.drawable.normal_background);
+//        lstSerialCode.add("AWW024CC4B61");
         PackListRequest packListRequest = new PackListRequest(
                 inputCode,
                 "",

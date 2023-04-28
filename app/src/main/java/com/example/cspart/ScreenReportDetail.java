@@ -2,6 +2,7 @@ package com.example.cspart;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -116,6 +118,7 @@ public class ScreenReportDetail extends AppCompatActivity {
         public void onClick(View v) {
             try {
                 save();
+
             }
             catch (Exception e) {
                 System.out.println("Error " + e.getMessage());
