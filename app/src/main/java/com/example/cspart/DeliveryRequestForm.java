@@ -126,6 +126,7 @@ public class DeliveryRequestForm extends AppCompatActivity{
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver(mScanReceiver);
     }
 
     @Override

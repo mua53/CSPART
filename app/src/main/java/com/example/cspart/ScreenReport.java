@@ -22,11 +22,11 @@ import retrofit2.Response;
 
 public class ScreenReport extends AppCompatActivity {
     String reportCode = "";
-    final static String START_SCANSERVICE = "unitech.scanservice.start";
-    final static String SCANNER_INIT = "unitech.scanservice.init";
-    final static String SCAN2KEY_SETTING = "unitech.scanservice.scan2key_setting";
-    final static String SOFTWARE_SCANKEY = "unitech.scanservice.software_scankey";
-    final static String CLOSE_SCANSERVICE = "unitech.scanservice.close";
+//    final static String START_SCANSERVICE = "unitech.scanservice.start";
+//    final static String SCANNER_INIT = "unitech.scanservice.init";
+//    final static String SCAN2KEY_SETTING = "unitech.scanservice.scan2key_setting";
+//    final static String SOFTWARE_SCANKEY = "unitech.scanservice.software_scankey";
+//    final static String CLOSE_SCANSERVICE = "unitech.scanservice.close";
     final static String ACTION_RECEIVE_DATA = "unitech.scanservice.data";
     final static String ACTION_RECEIVE_DATABYTES = "unitech.scanservice.databyte";
     final static String ACTION_RECEIVE_DATALENGTH = "unitech.scanservice.datalength";
@@ -53,6 +53,12 @@ public class ScreenReport extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mScanReceiver);
+        super.onDestroy();
     }
 
     @Override
@@ -114,13 +120,13 @@ public class ScreenReport extends AppCompatActivity {
         });
     }
 
-    private void closeScanService() {
-        //to close scan service
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("close",true);
-        Intent mIntent = new Intent().setAction(CLOSE_SCANSERVICE).putExtras(bundle);
-        sendBroadcast(mIntent);
-    }
+//    private void closeScanService() {
+//        //to close scan service
+//        Bundle bundle = new Bundle();
+//        bundle.putBoolean("close",true);
+//        Intent mIntent = new Intent().setAction(CLOSE_SCANSERVICE).putExtras(bundle);
+//        sendBroadcast(mIntent);
+//    }
 
     public void registerScannerReceiver() {
         IntentFilter filter = new IntentFilter();
@@ -131,29 +137,29 @@ public class ScreenReport extends AppCompatActivity {
         registerReceiver(mScanReceiver,filter);
     }
 
-    private void callScanner() {
-        Log.v("","callScanner");
-        startScanService();
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("scan",true);
-        Intent mIntent = new Intent().setAction(SOFTWARE_SCANKEY).putExtras(bundle);
-        sendBroadcast(mIntent);
-    }
-
-    private void startScanService() {
-        Bundle bundleStart = new Bundle();
-        bundleStart.putBoolean("close",true);
-        Intent intentStart = new Intent().setAction(START_SCANSERVICE).putExtras(bundleStart);
-        sendBroadcast(intentStart);
-
-        Bundle bundleScanKey = new Bundle();
-        bundleScanKey.putBoolean("scan2key",true);
-        Intent intentScanKey = new Intent().setAction(SCAN2KEY_SETTING).putExtras(bundleScanKey);
-        sendBroadcast(intentScanKey);
-
-        Bundle bundleScanInit = new Bundle();
-        bundleScanInit.putBoolean("enable",true);
-        Intent intentScanInit = new Intent().setAction(SCANNER_INIT).putExtras(bundleScanInit);
-        sendBroadcast(intentScanInit);
-    }
+//    private void callScanner() {
+//        Log.v("","callScanner");
+//        startScanService();
+//        Bundle bundle = new Bundle();
+//        bundle.putBoolean("scan",true);
+//        Intent mIntent = new Intent().setAction(SOFTWARE_SCANKEY).putExtras(bundle);
+//        sendBroadcast(mIntent);
+//    }
+//
+//    private void startScanService() {
+//        Bundle bundleStart = new Bundle();
+//        bundleStart.putBoolean("close",true);
+//        Intent intentStart = new Intent().setAction(START_SCANSERVICE).putExtras(bundleStart);
+//        sendBroadcast(intentStart);
+//
+//        Bundle bundleScanKey = new Bundle();
+//        bundleScanKey.putBoolean("scan2key",true);
+//        Intent intentScanKey = new Intent().setAction(SCAN2KEY_SETTING).putExtras(bundleScanKey);
+//        sendBroadcast(intentScanKey);
+//
+//        Bundle bundleScanInit = new Bundle();
+//        bundleScanInit.putBoolean("enable",true);
+//        Intent intentScanInit = new Intent().setAction(SCANNER_INIT).putExtras(bundleScanInit);
+//        sendBroadcast(intentScanInit);
+//    }
 }

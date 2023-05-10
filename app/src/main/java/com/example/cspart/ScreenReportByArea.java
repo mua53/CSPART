@@ -39,11 +39,6 @@ import retrofit2.Response;
 
 public class ScreenReportByArea extends AppCompatActivity {
 
-    final static String START_SCANSERVICE = "unitech.scanservice.start";
-    final static String SCANNER_INIT = "unitech.scanservice.init";
-    final static String SCAN2KEY_SETTING = "unitech.scanservice.scan2key_setting";
-    final static String SOFTWARE_SCANKEY = "unitech.scanservice.software_scankey";
-    final static String CLOSE_SCANSERVICE = "unitech.scanservice.close";
     final static String ACTION_RECEIVE_DATA = "unitech.scanservice.data";
     final static String ACTION_RECEIVE_DATABYTES = "unitech.scanservice.databyte";
     final static String ACTION_RECEIVE_DATALENGTH = "unitech.scanservice.datalength";
@@ -376,11 +371,12 @@ public class ScreenReportByArea extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_RECEIVE_DATA);
-        filter.addAction(ACTION_RECEIVE_DATABYTES);
-        filter.addAction(ACTION_RECEIVE_DATALENGTH);
-        filter.addAction(ACTION_RECEIVE_DATATYPE);
-        registerReceiver(mScanReceiver,filter);
+        registerScannerReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mScanReceiver);
+        super.onDestroy();
     }
 }

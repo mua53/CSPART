@@ -35,11 +35,6 @@ public class PrintTemp extends AppCompatActivity {
 
     private Connection connection;
     private Integer typeOfQR = 0;
-    final static String START_SCANSERVICE = "unitech.scanservice.start";
-    final static String SCANNER_INIT = "unitech.scanservice.init";
-    final static String SCAN2KEY_SETTING = "unitech.scanservice.scan2key_setting";
-    final static String SOFTWARE_SCANKEY = "unitech.scanservice.software_scankey";
-    final static String CLOSE_SCANSERVICE = "unitech.scanservice.close";
     final static String ACTION_RECEIVE_DATA = "unitech.scanservice.data";
     final static String ACTION_RECEIVE_DATABYTES = "unitech.scanservice.databyte";
     final static String ACTION_RECEIVE_DATALENGTH = "unitech.scanservice.datalength";
@@ -240,5 +235,23 @@ public class PrintTemp extends AppCompatActivity {
         filter.addAction(ACTION_RECEIVE_DATALENGTH);
         filter.addAction(ACTION_RECEIVE_DATATYPE);
         registerReceiver(mScanReceiver,filter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(mScanReceiver);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerScannerReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterReceiver(mScanReceiver);
+        super.onDestroy();
     }
 }
